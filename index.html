@@ -113,6 +113,34 @@
       animation: poolRipple 6s ease-in-out infinite;
     }
 
+/* 🫧 噴泉常駐小水珠：緩慢出現 → 掉下去 → 消失 */
+@keyframes idleDrop {
+  0%   { opacity: 0; transform: translateY(0); }
+  20%  { opacity: 1; transform: translateY(-2px); }
+  70%  { opacity: 1; transform: translateY(6px); }
+  100% { opacity: 0; transform: translateY(10px); }
+}
+
+.idle-drop {
+  transform-origin: center;
+  animation: idleDrop 2.8s ease-in-out infinite;
+}
+
+/* 幾顆水珠用不同延遲與時長，讓節奏不一樣 */
+.idle-drop-1 {
+  animation-duration: 2.6s;
+  animation-delay: 0.0s;
+}
+.idle-drop-2 {
+  animation-duration: 3.1s;
+  animation-delay: 0.9s;
+}
+.idle-drop-3 {
+  animation-duration: 3.4s;
+  animation-delay: 1.6s;
+}
+
+
     /* 💧 平常的水柱：輕輕跳動 */
     @keyframes streamSoftPulse {
       0%   { transform: scaleY(1); }
@@ -288,11 +316,14 @@
           <ellipse cx="95" cy="129" rx="16" ry="10" fill="#ffffff" opacity="0.95" />
         </g>
 
-        <!-- 遠處柔和小山 -->
-        <path d="M -20 270 Q 90 200 190 240 T 380 270 L 380 320 L -20 320 Z"
-              fill="#f1f0ff" opacity="0.7" />
-        <path d="M -10 280 Q 80 230 170 265 T 380 285 L 380 330 L -10 330 Z"
-              fill="#d8f0dd" opacity="0.9" />
+        <!-- 遠山（最遠：很淡的薄荷綠） -->
+<path d="M -20 270 Q 90 200 190 240 T 380 270 L 380 320 L -20 320 Z"
+      fill="#dff8e7" opacity="0.65" />
+
+<!-- 近山（淡淡綠，介於遠景與前景草坡之間） -->
+<path d="M -10 280 Q 80 230 170 265 T 380 285 L 380 330 L -10 330 Z"
+      fill="#b8e8c6" opacity="0.9" />
+
 
         <!-- 愛心灌木＋小花 -->
         <g class="bush">
@@ -360,8 +391,28 @@
         <!-- 上方圓盆 -->
         <ellipse cx="180" cy="260" rx="62" ry="20" fill="#fffaf4" />
         <ellipse cx="180" cy="258" rx="54" ry="15" fill="#f0e4d6" />
+        
         <!-- 盆內水 -->
         <ellipse cx="180" cy="256" rx="42" ry="9" fill="#bfeeff" opacity="0.95" />
+
+<!-- 噴泉常駐小水珠：不噴發時也有微微動感 -->
+<g fill="#ffffff">
+  <!-- 中央上升的小水珠 -->
+  <g class="idle-drop idle-drop-1">
+    <circle cx="180" cy="210" r="2.4" />
+  </g>
+
+  <!-- 偏左的小水珠 -->
+  <g class="idle-drop idle-drop-2">
+    <circle cx="173" cy="214" r="2.1" />
+  </g>
+
+  <!-- 偏右的小水珠 -->
+  <g class="idle-drop idle-drop-3">
+    <circle cx="187" cy="212" r="2.1" />
+  </g>
+</g>
+
 
         <!-- 常態水柱（柔和） -->
         <g class="stream-soft" fill="none" stroke="#bfeeff" stroke-width="4" stroke-linecap="round">
@@ -370,6 +421,7 @@
           <path d="M188 256 Q 187 235 190 220" opacity="0.7" />
         </g>
 
+        
         <!-- 噴發水柱（整點） -->
         <g class="stream-erupt" fill="none" stroke="#d3f5ff" stroke-width="4" stroke-linecap="round">
           <path d="M180 254 Q 180 210 180 160" />
@@ -380,13 +432,21 @@
           <path d="M184 175 Q 192 164 196 156" />
         </g>
 
-        <!-- 噴發水滴 -->
-        <g class="stream-erupt" fill="#d3f5ff">
-          <circle cx="160" cy="205" r="3" />
-          <circle cx="202" cy="200" r="3" />
-          <circle cx="175" cy="180" r="2.4" />
-          <circle cx="190" cy="173" r="2.4" />
-        </g>
+<!-- 噴發水滴（加量版，新增部分為白色） -->
+<g class="stream-erupt">
+  <!-- 原本藍色水滴 -->
+  <circle cx="160" cy="205" r="3" fill="#d3f5ff" />
+  <circle cx="202" cy="200" r="3" fill="#d3f5ff" />
+  <circle cx="175" cy="180" r="2.4" fill="#d3f5ff" />
+  <circle cx="190" cy="173" r="2.4" fill="#d3f5ff" />
+
+  <!-- 新增白色水珠（更亮、更可愛） -->
+  <circle cx="152" cy="195" r="2.6" fill="white" opacity="0.9" />
+  <circle cx="210" cy="190" r="2.6" fill="white" opacity="0.9" />
+  <circle cx="168" cy="188" r="2.2" fill="white" opacity="0.9" />
+  <circle cx="195" cy="184" r="2.2" fill="white" opacity="0.9" />
+  <circle cx="172" cy="170" r="2" fill="white" opacity="0.85" />
+  <circle cx="
 
         <!-- 噴發時的亮晶晶 -->
         <g class="sparkles">
