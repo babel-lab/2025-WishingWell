@@ -116,29 +116,24 @@
 /* 🫧 噴泉常駐小水珠：緩慢出現 → 掉下去 → 消失 */
 @keyframes idleDrop {
   0%   { opacity: 0; transform: translateY(0); }
-  20%  { opacity: 1; transform: translateY(-2px); }
-  70%  { opacity: 1; transform: translateY(6px); }
-  100% { opacity: 0; transform: translateY(10px); }
+  20%  { opacity: 1; transform: translateY(-3px); }
+  70%  { opacity: 1; transform: translateY(8px); }
+  100% { opacity: 0; transform: translateY(12px); }
 }
 
 .idle-drop {
   transform-origin: center;
-  animation: idleDrop 2.8s ease-in-out infinite;
+  animation: idleDrop 3s ease-in-out infinite;
 }
 
-/* 幾顆水珠用不同延遲與時長，讓節奏不一樣 */
-.idle-drop-1 {
-  animation-duration: 2.6s;
-  animation-delay: 0.0s;
-}
-.idle-drop-2 {
-  animation-duration: 3.1s;
-  animation-delay: 0.9s;
-}
-.idle-drop-3 {
-  animation-duration: 3.4s;
-  animation-delay: 1.6s;
-}
+/* 🔵⚪ 六顆水珠的節奏 */
+.idle-drop-1 { animation-duration: 2.6s; animation-delay: 0s; }
+.idle-drop-2 { animation-duration: 3.1s; animation-delay: 0.6s; }
+.idle-drop-3 { animation-duration: 3.4s; animation-delay: 1.2s; }
+.idle-drop-4 { animation-duration: 2.9s; animation-delay: 0.9s; }
+.idle-drop-5 { animation-duration: 3.6s; animation-delay: 1.8s; }
+.idle-drop-6 { animation-duration: 3.2s; animation-delay: 0.3s; }
+
 
 
     /* 💧 平常的水柱：輕輕跳動 */
@@ -395,22 +390,35 @@
         <!-- 盆內水 -->
         <ellipse cx="180" cy="256" rx="42" ry="9" fill="#bfeeff" opacity="0.95" />
 
-<!-- 噴泉常駐小水珠：不噴發時也有微微動感 -->
-<g fill="#ffffff">
-  <!-- 中央上升的小水珠 -->
+<!-- 🫧 噴泉常駐小水珠（藍白混合 6 顆） -->
+<g>
+
+  <!-- 🔵 藍色水珠 -->
   <g class="idle-drop idle-drop-1">
-    <circle cx="180" cy="210" r="2.4" />
+    <circle cx="180" cy="210" r="2.6" fill="#bfeeff"/>
   </g>
 
-  <!-- 偏左的小水珠 -->
   <g class="idle-drop idle-drop-2">
-    <circle cx="173" cy="214" r="2.1" />
+    <circle cx="173" cy="214" r="2.3" fill="#9fe6ff"/>
   </g>
 
-  <!-- 偏右的小水珠 -->
   <g class="idle-drop idle-drop-3">
-    <circle cx="187" cy="212" r="2.1" />
+    <circle cx="187" cy="212" r="2.1" fill="#bfeeff"/>
   </g>
+
+  <!-- ⚪ 白色水珠（高光感） -->
+  <g class="idle-drop idle-drop-4">
+    <circle cx="176" cy="208" r="2.0" fill="white" opacity="0.9"/>
+  </g>
+
+  <g class="idle-drop idle-drop-5">
+    <circle cx="184" cy="209" r="2.2" fill="white" opacity="0.85"/>
+  </g>
+
+  <g class="idle-drop idle-drop-6">
+    <circle cx="170" cy="212" r="1.8" fill="white" opacity="0.85"/>
+  </g>
+
 </g>
 
 
