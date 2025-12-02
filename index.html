@@ -2,22 +2,23 @@
 <html lang="zh-Hant">
 <head>
   <meta charset="UTF-8" />
-  <title>希臘許願池噴泉場景 - Demo</title>
+  <title>可愛希臘許願池噴泉場景 - Cute Demo</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
   <style>
     :root {
-      /* 🌤 清晨天空＋石材＋水的色票 */
-      --sky-top: #bfe6ff;       /* 清晨偏冷的淡藍 */
-      --sky-bottom: #ffe9c7;    /* 早晨光的暖橘 */
-      --ground: #f3d9a4;        /* 地面淡沙色 */
-      --stone-main: #f4f0ea;    /* 噴泉主體石材 */
-      --stone-shadow: #d6cfc2;
-      --water-light: #b8ecff;
-      --water-main: #71d3ff;
-      --water-dark: #2f9ad1;
-      --accent-gold: #f9c75b;
-      --bush: #7ac77a;
+      /* 🌤 清晨可愛馬卡龍色系 */
+      --sky-top: #cbe7ff;        /* 淡淡寶寶藍 */
+      --sky-bottom: #ffe0f0;     /* 粉紅晨光 */
+      --ground: #ffe9c7;         /* 柔和奶油地面 */
+      --stone-main: #fff7f0;     /* 噴泉主體石材 */
+      --stone-shadow: #e4d7c7;
+      --water-main: #9fe6ff;
+      --water-deep: #54c3f6;
+      --accent-gold: #ffd36b;
+      --bush: #92e3a9;
+      --pink: #ff9fb7;
+      --lavender: #c6b5ff;
     }
 
     * {
@@ -30,73 +31,110 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      background: radial-gradient(circle at 20% 0%, #fffdf5 0, #fff3d9 35%, #f5e4c3 100%);
+      background: radial-gradient(circle at 15% 0%, #fffdf8 0, #fff3dd 40%, #f7e4c8 100%);
       font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     }
 
     .wishing-scene-wrapper {
       width: 100%;
-      max-width: 480px; /* 手機為主，大版也不會過寬 */
+      max-width: 480px;
       padding: 16px;
     }
 
     .wishing-scene {
       position: relative;
-      border-radius: 24px;
+      border-radius: 28px;
       overflow: hidden;
-      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.08);
       background: linear-gradient(to bottom, var(--sky-top), var(--sky-bottom));
     }
 
-    /* 讓 SVG 在各尺寸自適應 */
     .wishing-scene svg {
       display: block;
       width: 100%;
       height: auto;
     }
 
+    /* 🌥️ 雲飄動畫 */
+    @keyframes cloudDrift {
+      0%   { transform: translateX(0); }
+      50%  { transform: translateX(18px); }
+      100% { transform: translateX(0); }
+    }
+    @keyframes cloudDriftSlow {
+      0%   { transform: translateX(0); }
+      50%  { transform: translateX(-16px); }
+      100% { transform: translateX(0); }
+    }
+    .cloud-a {
+      animation: cloudDrift 26s ease-in-out infinite;
+      transform-origin: center;
+    }
+    .cloud-b {
+      animation: cloudDriftSlow 34s ease-in-out infinite;
+      transform-origin: center;
+    }
+
+    /* 🌤 小太陽慢慢呼吸亮度 */
+    @keyframes sunGlow {
+      0%   { transform: scale(1); opacity: 0.9; }
+      50%  { transform: scale(1.05); opacity: 1; }
+      100% { transform: scale(1); opacity: 0.9; }
+    }
+    .sun {
+      transform-origin: center;
+      animation: sunGlow 6s ease-in-out infinite;
+    }
+
+    /* 🌿 灌木與小花輕微擺動 */
+    @keyframes bushSway {
+      0%   { transform: scaleY(1); }
+      50%  { transform: scaleY(1.05); }
+      100% { transform: scaleY(1); }
+    }
+    .bush {
+      transform-origin: center bottom;
+      animation: bushSway 5.6s ease-in-out infinite;
+    }
+
     /* 🟦 水面微微波動（常態） */
     @keyframes poolRipple {
       0%   { transform: scaleX(1) translateY(0); }
-      50%  { transform: scaleX(1.03) translateY(-1.5px); }
+      50%  { transform: scaleX(1.04) translateY(-2px); }
       100% { transform: scaleX(1) translateY(0); }
     }
-
     .pool-water {
       transform-origin: center;
-      animation: poolRipple 4.2s ease-in-out infinite;
+      animation: poolRipple 4.4s ease-in-out infinite;
     }
-
     .pool-ripple {
       transform-origin: center;
       opacity: 0.7;
-      animation: poolRipple 5.4s ease-in-out infinite;
+      animation: poolRipple 6s ease-in-out infinite;
     }
 
-    /* 💧 平常的水柱：小幅度上下律動 */
+    /* 💧 平常的水柱：輕輕跳動 */
     @keyframes streamSoftPulse {
       0%   { transform: scaleY(1); }
-      50%  { transform: scaleY(1.08); }
+      50%  { transform: scaleY(1.1); }
       100% { transform: scaleY(1); }
     }
-
     .stream-soft {
       transform-origin: bottom center;
       animation: streamSoftPulse 2.8s ease-in-out infinite;
     }
 
-    /* 💥 噴發用的水柱：預設縮起來，在 eruption 狀態才展開 */
+    /* 💥 噴發水柱：預設收起，eruption 時才展開 */
     .stream-erupt {
       transform-origin: bottom center;
       transform: scaleY(0);
       opacity: 0;
     }
-
     @keyframes eruptStream {
       0%   { transform: scaleY(0);   opacity: 0; }
-      10%  { transform: scaleY(1.4); opacity: 1; }
-      40%  { transform: scaleY(1.6); opacity: 1; }
-      80%  { transform: scaleY(1.2); opacity: 0.8; }
+      12%  { transform: scaleY(1.4); opacity: 1; }
+      40%  { transform: scaleY(1.7); opacity: 1; }
+      80%  { transform: scaleY(1.2); opacity: 0.9; }
       100% { transform: scaleY(0);   opacity: 0; }
     }
 
@@ -104,32 +142,54 @@
       animation: eruptStream 3s cubic-bezier(0.25, 0.8, 0.3, 1) forwards;
     }
 
-    /* 噴發時也讓水面波動略微加劇 */
+    /* 噴發時水面更用力晃一下 */
     @keyframes poolRippleStrong {
       0%   { transform: scaleX(1) translateY(0); }
-      30%  { transform: scaleX(1.06) translateY(-3px); }
+      30%  { transform: scaleX(1.08) translateY(-3px); }
       60%  { transform: scaleX(1.03) translateY(-1px); }
       100% { transform: scaleX(1) translateY(0); }
     }
-
     .wishing-scene.eruption .pool-water,
     .wishing-scene.eruption .pool-ripple {
       animation: poolRippleStrong 3s ease-out;
     }
 
-    /* 🌤 小太陽閃動一點點亮度 */
-    @keyframes sunGlow {
-      0%   { transform: scale(1); opacity: 0.9; }
-      50%  { transform: scale(1.04); opacity: 1; }
-      100% { transform: scale(1); opacity: 0.9; }
+    /* ✨ 噴發時的亮晶晶 */
+    .sparkles circle {
+      opacity: 0;
+    }
+    @keyframes sparklePop {
+      0%   { transform: scale(0.2); opacity: 0; }
+      20%  { transform: scale(1);   opacity: 1; }
+      80%  { transform: scale(1.1); opacity: 0; }
+      100% { transform: scale(0.2); opacity: 0; }
+    }
+    .wishing-scene.eruption .sparkles circle {
+      animation: sparklePop 1.6s ease-out forwards;
+    }
+    .wishing-scene.eruption .sparkles circle:nth-child(2) {
+      animation-delay: 0.15s;
+    }
+    .wishing-scene.eruption .sparkles circle:nth-child(3) {
+      animation-delay: 0.3s;
+    }
+    .wishing-scene.eruption .sparkles circle:nth-child(4) {
+      animation-delay: 0.45s;
     }
 
-    .sun {
+    /* 😄 噴泉小臉在噴發時開心一點（嘴巴放大） */
+    @keyframes mouthHappy {
+      0%   { transform: scaleY(1); }
+      40%  { transform: scaleY(1.3); }
+      80%  { transform: scaleY(1.1); }
+      100% { transform: scaleY(1); }
+    }
+    .wishing-scene.eruption .face-mouth {
       transform-origin: center;
-      animation: sunGlow 5s ease-in-out infinite;
+      animation: mouthHappy 2.2s ease-out;
     }
 
-    /* 📱 小註記文字 */
+    /* 📱 小註記文字＋測試按鈕 */
     .info-bar {
       margin-top: 8px;
       font-size: 12px;
@@ -145,7 +205,6 @@
       background: rgba(0,0,0,0.04);
     }
 
-    /* 可選：開發測試用按鈕，正式上線可以刪掉 */
     .debug-btn {
       margin-top: 8px;
       display: inline-block;
@@ -170,135 +229,195 @@
     }
   </style>
 </head>
-
 <body>
   <div class="wishing-scene-wrapper">
     <div class="wishing-scene" id="wishingScene">
-      <!-- 使用固定 viewBox 的 SVG 讓 RWD 時維持比例 -->
       <svg viewBox="0 0 360 640" xmlns="http://www.w3.org/2000/svg" aria-labelledby="title desc" role="img">
-        <title id="title">希臘許願池噴泉</title>
-        <desc id="desc">一座卡通風格的希臘許願池噴泉，天空為早晨的顏色，水面會緩慢波動，每到整點會噴發。</desc>
+        <title id="title">可愛希臘許願池噴泉</title>
+        <desc id="desc">粉嫩清晨色調的希臘風許願池，中間有一座可愛帶笑臉的小噴泉，水面波動，雲朵飄動，整點時噴泉會開心噴發。</desc>
 
-        <!-- 🌤 天空漸層背景 -->
+        <!-- 背景天空漸層 -->
         <defs>
           <linearGradient id="skyGradient" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stop-color="#bfe6ff" />
-            <stop offset="60%" stop-color="#ffe9c7" />
-            <stop offset="100%" stop-color="#f3d9a4" />
+            <stop offset="0%" stop-color="#cbe7ff" />
+            <stop offset="55%" stop-color="#ffe0f0" />
+            <stop offset="100%" stop-color="#ffe9c7" />
           </linearGradient>
 
           <radialGradient id="sunGradient" cx="50%" cy="30%" r="40%">
-            <stop offset="0%" stop-color="#ffecc0" />
-            <stop offset="100%" stop-color="#ffce73" />
+            <stop offset="0%" stop-color="#fff6c1" />
+            <stop offset="100%" stop-color="#ffd36b" />
           </radialGradient>
 
-          <radialGradient id="poolGradient" cx="50%" cy="40%" r="60%">
-            <stop offset="0%" stop-color="#b8ecff" />
-            <stop offset="40%" stop-color="#71d3ff" />
-            <stop offset="100%" stop-color="#2f9ad1" />
+          <radialGradient id="poolGradient" cx="50%" cy="40%" r="65%">
+            <stop offset="0%" stop-color="#d6f6ff" />
+            <stop offset="45%" stop-color="#9fe6ff" />
+            <stop offset="100%" stop-color="#54c3f6" />
           </radialGradient>
 
           <linearGradient id="stoneGradient" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stop-color="#f4f0ea" />
-            <stop offset="100%" stop-color="#d6cfc2" />
+            <stop offset="0%" stop-color="#fff7f0" />
+            <stop offset="100%" stop-color="#e4d7c7" />
           </linearGradient>
+
+          <radialGradient id="heartBushGrad" cx="50%" cy="40%" r="70%">
+            <stop offset="0%" stop-color="#a9f0bc" />
+            <stop offset="100%" stop-color="#74d68c" />
+          </radialGradient>
         </defs>
 
-        <!-- 背景天空 -->
+        <!-- 天空背景 -->
         <rect x="0" y="0" width="360" height="640" fill="url(#skyGradient)" />
 
         <!-- 太陽 -->
         <g class="sun">
-          <circle cx="70" cy="80" r="32" fill="url(#sunGradient)" />
-          <!-- 太陽小光芒 -->
-          <circle cx="70" cy="80" r="38" fill="none" stroke="#ffe6a0" stroke-width="3" opacity="0.4" />
+          <circle cx="60" cy="78" r="30" fill="url(#sunGradient)" />
+          <circle cx="60" cy="78" r="38" fill="none" stroke="#ffeeb0" stroke-width="3" opacity="0.6" />
         </g>
 
-        <!-- 遠處小山＋樹叢 -->
-        <path d="M -20 260 Q 80 190 180 240 T 380 260 L 380 320 L -20 320 Z"
-              fill="#c9ddc0" opacity="0.8" />
-        <path d="M -10 270 Q 60 230 140 260 T 380 280 L 380 340 L -10 340 Z"
-              fill="#9dcf9a" opacity="0.85" />
-        <!-- 左右小灌木 -->
-        <ellipse cx="60" cy="315" rx="32" ry="16" fill="#7ac77a" />
-        <ellipse cx="300" cy="310" rx="28" ry="14" fill="#7ac77a" />
+        <!-- 雲朵 A -->
+        <g class="cloud-a">
+          <ellipse cx="250" cy="70" rx="34" ry="18" fill="#ffffff" opacity="0.96" />
+          <ellipse cx="270" cy="64" rx="22" ry="14" fill="#ffffff" opacity="0.96" />
+          <ellipse cx="230" cy="68" rx="20" ry="12" fill="#ffffff" opacity="0.96" />
+        </g>
+        <!-- 雲朵 B -->
+        <g class="cloud-b">
+          <ellipse cx="110" cy="130" rx="24" ry="14" fill="#ffffff" opacity="0.95" />
+          <ellipse cx="128" cy="126" rx="18" ry="12" fill="#ffffff" opacity="0.95" />
+          <ellipse cx="95" cy="129" rx="16" ry="10" fill="#ffffff" opacity="0.95" />
+        </g>
+
+        <!-- 遠處柔和小山 -->
+        <path d="M -20 270 Q 90 200 190 240 T 380 270 L 380 320 L -20 320 Z"
+              fill="#f1f0ff" opacity="0.7" />
+        <path d="M -10 280 Q 80 230 170 265 T 380 285 L 380 330 L -10 330 Z"
+              fill="#d8f0dd" opacity="0.9" />
+
+        <!-- 愛心灌木＋小花 -->
+        <g class="bush">
+          <!-- 左愛心灌木 -->
+          <path d="M55 315
+                   C 45 300, 30 295, 30 308
+                   C 30 322, 45 335, 55 343
+                   C 65 335, 80 322, 80 308
+                   C 80 295, 65 300, 55 315 Z"
+                fill="url(#heartBushGrad)" />
+          <!-- 小花 -->
+          <circle cx="52" cy="310" r="3" fill="#ff9fb7" />
+          <circle cx="64" cy="320" r="2.6" fill="#fff3b0" />
+        </g>
+
+        <g class="bush">
+          <!-- 右灌木 -->
+          <ellipse cx="300" cy="312" rx="26" ry="15" fill="#92e3a9" />
+          <circle cx="294" cy="306" r="2.4" fill="#ff9fb7" />
+          <circle cx="305" cy="314" r="2.4" fill="#c6b5ff" />
+        </g>
 
         <!-- 地面 -->
-        <rect x="0" y="320" width="360" height="320" fill="var(--ground)" />
+        <rect x="0" y="320" width="360" height="320" fill="#ffe9c7" />
 
-        <!-- 🟦 水池外框（石材） -->
-        <ellipse cx="180" cy="390" rx="130" ry="38" fill="url(#stoneGradient)" />
-        <ellipse cx="180" cy="392" rx="120" ry="34" fill="#e2dbcf" />
+        <!-- 水池外框（可愛加厚） -->
+        <ellipse cx="180" cy="398" rx="132" ry="42" fill="#e4d7c7" opacity="0.8" />
+        <ellipse cx="180" cy="396" rx="120" ry="36" fill="#fff7f0" />
 
-        <!-- 🟦 水池水面 -->
+        <!-- 水池內部 -->
         <g class="pool-water">
-          <!-- 主水面 -->
-          <ellipse cx="180" cy="386" rx="110" ry="26" fill="url(#poolGradient)" />
-          <!-- 水面亮邊 -->
-          <ellipse cx="180" cy="380" rx="95" ry="18" fill="#ffffff" opacity="0.16" />
-
-          <!-- 幾個波紋線條 -->
+          <ellipse cx="180" cy="390" rx="108" ry="28" fill="url(#poolGradient)" />
+          <!-- 上方亮邊 -->
+          <ellipse cx="180" cy="383" rx="90" ry="16" fill="#ffffff" opacity="0.22" />
+          <!-- 兩圈波紋 -->
           <g class="pool-ripple">
-            <ellipse cx="180" cy="388" rx="60" ry="10" fill="none" stroke="#ffffff" stroke-width="1.5" opacity="0.35" />
-            <ellipse cx="180" cy="394" rx="80" ry="12" fill="none" stroke="#e4f8ff" stroke-width="1" opacity="0.35" />
+            <ellipse cx="180" cy="392" rx="60" ry="10" fill="none" stroke="#ffffff" stroke-width="1.4" opacity="0.5" />
+            <ellipse cx="180" cy="398" rx="82" ry="12" fill="none" stroke="#e4f8ff" stroke-width="1.2" opacity="0.45" />
           </g>
         </g>
 
-        <!-- 噴泉主體：底座＋柱子＋上方盆 -->
+        <!-- 噴泉底座＋柱子＋上盆：整體圓圓胖胖 -->
         <!-- 底座 -->
-        <rect x="120" y="340" width="120" height="18" rx="8" fill="url(#stoneGradient)" />
-        <rect x="132" y="325" width="96" height="20" rx="8" fill="#f7f3ed" />
-        <!-- 柱子 -->
-        <rect x="152" y="260" width="56" height="72" rx="10" fill="url(#stoneGradient)" />
-        <!-- 柱子裝飾線 -->
-        <rect x="152" y="270" width="56" height="6" rx="3" fill="#ebe5dc" />
-        <rect x="152" y="303" width="56" height="6" rx="3" fill="#ebe5dc" />
+        <rect x="120" y="346" width="120" height="20" rx="10" fill="url(#stoneGradient)" />
+        <rect x="128" y="334" width="104" height="18" rx="9" fill="#fffaf4" />
 
-        <!-- 上方盆 -->
-        <ellipse cx="180" cy="252" rx="60" ry="18" fill="#f7f3ed" />
-        <ellipse cx="180" cy="250" rx="54" ry="14" fill="#ebe5dc" />
+        <!-- 柱子（中間胖柱） -->
+        <rect x="150" y="268" width="60" height="76" rx="18" fill="url(#stoneGradient)" />
+        <!-- 中間裝飾線 -->
+        <rect x="150" y="280" width="60" height="6" rx="3" fill="#f0e4d6" />
+        <rect x="150" y="306" width="60" height="6" rx="3" fill="#f0e4d6" />
+
+        <!-- 噴泉小臉 -->
+        <!-- 眼睛 -->
+        <circle cx="165" cy="298" r="3" fill="#453434" />
+        <circle cx="195" cy="298" r="3" fill="#453434" />
+        <!-- 腮紅 -->
+        <ellipse cx="159" cy="304" rx="4" ry="2.2" fill="#ffb2c4" opacity="0.8" />
+        <ellipse cx="201" cy="304" rx="4" ry="2.2" fill="#ffb2c4" opacity="0.8" />
+        <!-- 嘴巴 -->
+        <path class="face-mouth"
+              d="M170 307 Q 180 313 190 307"
+              fill="none" stroke="#453434" stroke-width="2" stroke-linecap="round" />
+
+        <!-- 上方圓盆 -->
+        <ellipse cx="180" cy="260" rx="62" ry="20" fill="#fffaf4" />
+        <ellipse cx="180" cy="258" rx="54" ry="15" fill="#f0e4d6" />
         <!-- 盆內水 -->
-        <ellipse cx="180" cy="248" rx="44" ry="9" fill="#9be0ff" opacity="0.9" />
+        <ellipse cx="180" cy="256" rx="42" ry="9" fill="#bfeeff" opacity="0.95" />
 
-        <!-- 中心常態水柱（柔和） -->
-        <g class="stream-soft" fill="none" stroke="#9be0ff" stroke-width="4" stroke-linecap="round">
-          <path d="M180 246 Q 180 220 180 190" />
-          <path d="M170 248 Q 172 228 170 210" opacity="0.65" />
-          <path d="M190 248 Q 188 228 190 210" opacity="0.65" />
+        <!-- 常態水柱（柔和） -->
+        <g class="stream-soft" fill="none" stroke="#bfeeff" stroke-width="4" stroke-linecap="round">
+          <path d="M180 254 Q 180 230 180 205" />
+          <path d="M172 256 Q 173 235 170 220" opacity="0.7" />
+          <path d="M188 256 Q 187 235 190 220" opacity="0.7" />
         </g>
 
-        <!-- 噴發用水柱（整點出現） -->
-        <g class="stream-erupt" fill="none" stroke="#b9ecff" stroke-width="4" stroke-linecap="round">
-          <!-- 中心高噴柱 -->
-          <path d="M180 246 Q 180 190 180 150" />
-          <!-- 左右弧線 -->
-          <path d="M168 246 Q 150 210 148 185" />
-          <path d="M192 246 Q 210 210 212 185" />
-          <!-- 額外小水花 -->
-          <path d="M175 160 Q 168 150 165 145" />
-          <path d="M185 160 Q 192 150 195 145" />
+        <!-- 噴發水柱（整點） -->
+        <g class="stream-erupt" fill="none" stroke="#d3f5ff" stroke-width="4" stroke-linecap="round">
+          <path d="M180 254 Q 180 210 180 160" />
+          <path d="M168 256 Q 150 225 145 196" />
+          <path d="M192 256 Q 210 225 215 196" />
+          <!-- 小側噴 -->
+          <path d="M176 175 Q 168 164 164 156" />
+          <path d="M184 175 Q 192 164 196 156" />
         </g>
 
-        <!-- 水滴回落效果（簡單幾顆） -->
-        <g class="stream-erupt" fill="#b9ecff">
-          <circle cx="160" cy="200" r="3" />
-          <circle cx="200" cy="195" r="3" />
-          <circle cx="175" cy="175" r="2.4" />
-          <circle cx="190" cy="170" r="2.2" />
+        <!-- 噴發水滴 -->
+        <g class="stream-erupt" fill="#d3f5ff">
+          <circle cx="160" cy="205" r="3" />
+          <circle cx="202" cy="200" r="3" />
+          <circle cx="175" cy="180" r="2.4" />
+          <circle cx="190" cy="173" r="2.4" />
         </g>
 
-        <!-- 池邊小金幣（之後可以當遊戲互動元素） -->
-        <circle cx="120" cy="398" r="6" fill="#f9c75b" stroke="#e2a93a" stroke-width="2" />
-        <circle cx="238" cy="402" r="5" fill="#f9c75b" stroke="#e2a93a" stroke-width="2" />
-        <circle cx="205" cy="392" r="4.5" fill="#f9c75b" stroke="#e2a93a" stroke-width="2" />
+        <!-- 噴發時的亮晶晶 -->
+        <g class="sparkles">
+          <circle cx="160" cy="150" r="3" fill="#fff7b8" />
+          <circle cx="200" cy="145" r="3.2" fill="#ffe0ff" />
+          <circle cx="180" cy="135" r="3" fill="#ffffff" />
+          <circle cx="190" cy="158" r="2.6" fill="#ffd8b5" />
+        </g>
+
+        <!-- 池邊可愛小金幣＋裝飾 -->
+        <g>
+          <circle cx="118" cy="402" r="7" fill="#ffd36b" stroke="#e2a93a" stroke-width="2" />
+          <circle cx="116" cy="399" r="2.6" fill="#fff1c2" />
+          <circle cx="240" cy="405" r="6" fill="#ffd36b" stroke="#e2a93a" stroke-width="2" />
+          <circle cx="238" cy="402" r="2.4" fill="#fff1c2" />
+          <circle cx="205" cy="396" r="4.8" fill="#ffd36b" stroke="#e2a93a" stroke-width="2" />
+        </g>
+
+        <!-- 水池前方幾朵小花裝飾 -->
+        <g>
+          <circle cx="90" cy="420" r="3.2" fill="#ff9fb7" />
+          <circle cx="274" cy="416" r="3.2" fill="#c6b5ff" />
+        </g>
 
       </svg>
     </div>
 
     <div class="info-bar">
-      💡 每到「整點」會自動觸發噴泉噴發動畫。<br />
-      開發時可在 Console 呼叫 <code>triggerFountain()</code> 手動測試，<br />
-      或按下下方按鈕。
+      🌟 整點時噴泉會「開心噴發」並冒出亮晶晶。<br />
+      開發時可在 Console 呼叫 <code>triggerFountain()</code>，<br />
+      或按下面按鈕試噴一次：
       <div>
         <button class="debug-btn" id="debugBtn">試噴一次（開發用）</button>
       </div>
@@ -314,31 +433,27 @@
         if (!scene) return;
         scene.classList.add("eruption");
 
-        // 噴發動畫大約 3 秒，保險抓 3.5 秒後移除 class
+        // 噴發動畫約 3 秒，抓 3.5 秒後移除 class
         setTimeout(() => {
           scene.classList.remove("eruption");
         }, 3500);
       }
 
-      // 對外掛一個 global function，方便在 console 測試
+      // 對外提供測試用 function
       window.triggerFountain = triggerFountain;
 
-      // 開發測試按鈕
       if (debugBtn) {
         debugBtn.addEventListener("click", triggerFountain);
       }
 
-      // 計算距離下一個整點的毫秒數
+      // 計算距離下一個整點噴發
       function scheduleHourlyEruption() {
         const now = new Date();
         const nextHour = new Date(now);
-
-        // 下一個整點：小時+1，分秒毫秒歸零
         nextHour.setHours(now.getHours() + 1, 0, 0, 0);
 
         const delay = nextHour.getTime() - now.getTime();
 
-        // 到下一個整點時先噴一次，之後每小時噴一次
         setTimeout(() => {
           triggerFountain();
           setInterval(triggerFountain, 60 * 60 * 1000); // 每 60 分鐘
