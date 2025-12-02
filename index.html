@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <title>希臘許願池噴泉場景 - Demo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <style>
+    :root {
+      /* 🌤 清晨天空＋石材＋水的色票 */
+      --sky-top: #bfe6ff;       /* 清晨偏冷的淡藍 */
+      --sky-bottom: #ffe9c7;    /* 早晨光的暖橘 */
+      --ground: #f3d9a4;        /* 地面淡沙色 */
+      --stone-main: #f4f0ea;    /* 噴泉主體石材 */
+      --stone-shadow: #d6cfc2;
+      --water-light: #b8ecff;
+      --water-main: #71d3ff;
+      --water-dark: #2f9ad1;
+      --accent-gold: #f9c75b;
+      --bush: #7ac77a;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: radial-gradient(circle at 20% 0%, #fffdf5 0, #fff3d9 35%, #f5e4c3 100%);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    .wishing-scene-wrapper {
+      width: 100%;
+      max-width: 480px; /* 手機為主，大版也不會過寬 */
+      padding: 16px;
+    }
+
+    .wishing-scene {
+      position: relative;
+      border-radius: 24px;
+      overflow: hidden;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
+      background: linear-gradient(to bottom, var(--sky-top), var(--sky-bottom));
+    }
+
+    /* 讓 SVG 在各尺寸自適應 */
+    .wishing-scene svg {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+
+    /* 🟦 水面微微波動（常態） */
+    @keyframes poolRipple {
+      0%   { transform: scaleX(1) translateY(0); }
+      50%  { transform: scaleX(1.03) translateY(-1.5px); }
+      100% { transform: scaleX(1) translateY(0); }
+    }
+
+    .pool-water {
+      transform-origin: center;
+      animation: poolRipple 4.2s ease-in-out infinite;
+    }
+
+    .pool-ripple {
+      transform-origin: center;
+      opacity: 0.7;
+      animation: poolRipple 5.4s ease-in-out infinite;
+    }
+
+    /* 💧 平常的水柱：小幅度上下律動 */
+    @keyframes streamSoftPulse {
+      0%   { transform: scaleY(1); }
+      50%  { transform: scaleY(1.08); }
+      100% { transform: scaleY(1); }
+    }
+
+    .stream-soft {
+      transform-origin: bottom center;
+      animation: streamSoftPulse 2.8s ease-in-out infinite;
+    }
+
+    /* 💥 噴發用的水柱：預設縮起來，在 eruption 狀態才展開 */
+    .stream-erupt {
+      transform-origin: bottom center;
+      transform: scaleY(0);
+      opacity: 0;
+    }
+
+    @keyframes eruptStream {
+      0%   { transform: scaleY(0);   opacity: 0; }
+      10%  { transform: scaleY(1.4); opacity: 1; }
+      40%  { transform: scaleY(1.6); opacity: 1; }
+      80%  { transform: scaleY(1.2); opacity: 0.8; }
+      100% { transform: scaleY(0);   opacity: 0; }
+    }
+
+    .wishing-scene.eruption .stream-erupt {
+      animation: eruptStream 3s cubic-bezier(0.25, 0.8, 0.3, 1) forwards;
+    }
+
+    /* 噴發時也讓水面波動略微加劇 */
+    @keyframes poolRippleStrong {
+      0%   { transform: scaleX(1) translateY(0); }
+      30%  { transform: scaleX(1.06) translateY(-3px); }
+      60%  { transform: scaleX(1.03) translateY(-1px); }
+      100% { transform: scaleX(1) translateY(0); }
+    }
+
+    .wishing-scene.eruption .pool-water,
+    .wishing-scene.eruption .pool-ripple {
+      animation: poolRippleStrong 3s ease-out;
+    }
+
+    /* 🌤 小太陽閃動一點點亮度 */
+    @keyframes sunGlow {
+      0%   { transform: scale(1); opacity: 0.9; }
+      50%  { transform: scale(1.04); opacity: 1; }
+      100% { transform: scale(1); opacity: 0.9; }
+    }
+
+    .sun {
+      transform-origin: center;
+      animation: sunGlow 5s ease-in-out infinite;
+    }
+
+    /* 📱 小註記文字 */
+    .info-bar {
+      margin-top: 8px;
+      font-size: 12px;
+      color: #555;
+      text-align: center;
+      line-height: 1.4;
+    }
+
+    .info-bar code {
+      font-size: 11px;
+      padding: 2px 4px;
+      border-radius: 4px;
+      background: rgba(0,0,0,0.04);
+    }
+
+    /* 可選：開發測試用按鈕，正式上線可以刪掉 */
+    .debug-btn {
+      margin-top: 8px;
+      display: inline-block;
+      padding: 4px 10px;
+      font-size: 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(0,0,0,0.12);
+      background: #fffdf7;
+      cursor: pointer;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+    }
+
+    .debug-btn:active {
+      transform: translateY(1px);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.16);
+    }
+
+    @media (min-width: 768px) {
+      .wishing-scene-wrapper {
+        max-width: 640px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wishing-scene-wrapper">
+    <div class="wishing-scene" id="wishingScene">
+      <!-- 使用固定 viewBox 的 SVG 讓 RWD 時維持比例 -->
+      <svg viewBox="0 0 360 640" xmlns="http://www.w3.org/2000/svg" aria-labelledby="title desc" role="img">
+        <title id="title">希臘許願池噴泉</title>
+        <desc id="desc">一座卡通風格的希臘許願池噴泉，天空為早晨的顏色，水面會緩慢波動，每到整點會噴發。</desc>
+
+        <!-- 🌤 天空漸層背景 -->
+        <defs>
+          <linearGradient id="skyGradient" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#bfe6ff" />
+            <stop offset="60%" stop-color="#ffe9c7" />
+            <stop offset="100%" stop-color="#f3d9a4" />
+          </linearGradient>
+
+          <radialGradient id="sunGradient" cx="50%" cy="30%" r="40%">
+            <stop offset="0%" stop-color="#ffecc0" />
+            <stop offset="100%" stop-color="#ffce73" />
+          </radialGradient>
+
+          <radialGradient id="poolGradient" cx="50%" cy="40%" r="60%">
+            <stop offset="0%" stop-color="#b8ecff" />
+            <stop offset="40%" stop-color="#71d3ff" />
+            <stop offset="100%" stop-color="#2f9ad1" />
+          </radialGradient>
+
+          <linearGradient id="stoneGradient" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#f4f0ea" />
+            <stop offset="100%" stop-color="#d6cfc2" />
+          </linearGradient>
+        </defs>
+
+        <!-- 背景天空 -->
+        <rect x="0" y="0" width="360" height="640" fill="url(#skyGradient)" />
+
+        <!-- 太陽 -->
+        <g class="sun">
+          <circle cx="70" cy="80" r="32" fill="url(#sunGradient)" />
+          <!-- 太陽小光芒 -->
+          <circle cx="70" cy="80" r="38" fill="none" stroke="#ffe6a0" stroke-width="3" opacity="0.4" />
+        </g>
+
+        <!-- 遠處小山＋樹叢 -->
+        <path d="M -20 260 Q 80 190 180 240 T 380 260 L 380 320 L -20 320 Z"
+              fill="#c9ddc0" opacity="0.8" />
+        <path d="M -10 270 Q 60 230 140 260 T 380 280 L 380 340 L -10 340 Z"
+              fill="#9dcf9a" opacity="0.85" />
+        <!-- 左右小灌木 -->
+        <ellipse cx="60" cy="315" rx="32" ry="16" fill="#7ac77a" />
+        <ellipse cx="300" cy="310" rx="28" ry="14" fill="#7ac77a" />
+
+        <!-- 地面 -->
+        <rect x="0" y="320" width="360" height="320" fill="var(--ground)" />
+
+        <!-- 🟦 水池外框（石材） -->
+        <ellipse cx="180" cy="390" rx="130" ry="38" fill="url(#stoneGradient)" />
+        <ellipse cx="180" cy="392" rx="120" ry="34" fill="#e2dbcf" />
+
+        <!-- 🟦 水池水面 -->
+        <g class="pool-water">
+          <!-- 主水面 -->
+          <ellipse cx="180" cy="386" rx="110" ry="26" fill="url(#poolGradient)" />
+          <!-- 水面亮邊 -->
+          <ellipse cx="180" cy="380" rx="95" ry="18" fill="#ffffff" opacity="0.16" />
+
+          <!-- 幾個波紋線條 -->
+          <g class="pool-ripple">
+            <ellipse cx="180" cy="388" rx="60" ry="10" fill="none" stroke="#ffffff" stroke-width="1.5" opacity="0.35" />
+            <ellipse cx="180" cy="394" rx="80" ry="12" fill="none" stroke="#e4f8ff" stroke-width="1" opacity="0.35" />
+          </g>
+        </g>
+
+        <!-- 噴泉主體：底座＋柱子＋上方盆 -->
+        <!-- 底座 -->
+        <rect x="120" y="340" width="120" height="18" rx="8" fill="url(#stoneGradient)" />
+        <rect x="132" y="325" width="96" height="20" rx="8" fill="#f7f3ed" />
+        <!-- 柱子 -->
+        <rect x="152" y="260" width="56" height="72" rx="10" fill="url(#stoneGradient)" />
+        <!-- 柱子裝飾線 -->
+        <rect x="152" y="270" width="56" height="6" rx="3" fill="#ebe5dc" />
+        <rect x="152" y="303" width="56" height="6" rx="3" fill="#ebe5dc" />
+
+        <!-- 上方盆 -->
+        <ellipse cx="180" cy="252" rx="60" ry="18" fill="#f7f3ed" />
+        <ellipse cx="180" cy="250" rx="54" ry="14" fill="#ebe5dc" />
+        <!-- 盆內水 -->
+        <ellipse cx="180" cy="248" rx="44" ry="9" fill="#9be0ff" opacity="0.9" />
+
+        <!-- 中心常態水柱（柔和） -->
+        <g class="stream-soft" fill="none" stroke="#9be0ff" stroke-width="4" stroke-linecap="round">
+          <path d="M180 246 Q 180 220 180 190" />
+          <path d="M170 248 Q 172 228 170 210" opacity="0.65" />
+          <path d="M190 248 Q 188 228 190 210" opacity="0.65" />
+        </g>
+
+        <!-- 噴發用水柱（整點出現） -->
+        <g class="stream-erupt" fill="none" stroke="#b9ecff" stroke-width="4" stroke-linecap="round">
+          <!-- 中心高噴柱 -->
+          <path d="M180 246 Q 180 190 180 150" />
+          <!-- 左右弧線 -->
+          <path d="M168 246 Q 150 210 148 185" />
+          <path d="M192 246 Q 210 210 212 185" />
+          <!-- 額外小水花 -->
+          <path d="M175 160 Q 168 150 165 145" />
+          <path d="M185 160 Q 192 150 195 145" />
+        </g>
+
+        <!-- 水滴回落效果（簡單幾顆） -->
+        <g class="stream-erupt" fill="#b9ecff">
+          <circle cx="160" cy="200" r="3" />
+          <circle cx="200" cy="195" r="3" />
+          <circle cx="175" cy="175" r="2.4" />
+          <circle cx="190" cy="170" r="2.2" />
+        </g>
+
+        <!-- 池邊小金幣（之後可以當遊戲互動元素） -->
+        <circle cx="120" cy="398" r="6" fill="#f9c75b" stroke="#e2a93a" stroke-width="2" />
+        <circle cx="238" cy="402" r="5" fill="#f9c75b" stroke="#e2a93a" stroke-width="2" />
+        <circle cx="205" cy="392" r="4.5" fill="#f9c75b" stroke="#e2a93a" stroke-width="2" />
+
+      </svg>
+    </div>
+
+    <div class="info-bar">
+      💡 每到「整點」會自動觸發噴泉噴發動畫。<br />
+      開發時可在 Console 呼叫 <code>triggerFountain()</code> 手動測試，<br />
+      或按下下方按鈕。
+      <div>
+        <button class="debug-btn" id="debugBtn">試噴一次（開發用）</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      const scene = document.getElementById("wishingScene");
+      const debugBtn = document.getElementById("debugBtn");
+
+      function triggerFountain() {
+        if (!scene) return;
+        scene.classList.add("eruption");
+
+        // 噴發動畫大約 3 秒，保險抓 3.5 秒後移除 class
+        setTimeout(() => {
+          scene.classList.remove("eruption");
+        }, 3500);
+      }
+
+      // 對外掛一個 global function，方便在 console 測試
+      window.triggerFountain = triggerFountain;
+
+      // 開發測試按鈕
+      if (debugBtn) {
+        debugBtn.addEventListener("click", triggerFountain);
+      }
+
+      // 計算距離下一個整點的毫秒數
+      function scheduleHourlyEruption() {
+        const now = new Date();
+        const nextHour = new Date(now);
+
+        // 下一個整點：小時+1，分秒毫秒歸零
+        nextHour.setHours(now.getHours() + 1, 0, 0, 0);
+
+        const delay = nextHour.getTime() - now.getTime();
+
+        // 到下一個整點時先噴一次，之後每小時噴一次
+        setTimeout(() => {
+          triggerFountain();
+          setInterval(triggerFountain, 60 * 60 * 1000); // 每 60 分鐘
+        }, delay);
+      }
+
+      scheduleHourlyEruption();
+    })();
+  </script>
+</body>
+</html>
