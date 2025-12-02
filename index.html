@@ -7,19 +7,19 @@
 
   <style>
     :root {
-      /* 🌤 清晨可愛馬卡龍色系 */
-      --sky-top: #cbe7ff;        /* 淡淡寶寶藍 */
-      --sky-bottom: #ffe0f0;     /* 粉紅晨光 */
-      --ground: #ffe9c7;         /* 柔和奶油地面 */
-      --stone-main: #fff7f0;     /* 噴泉主體石材 */
-      --stone-shadow: #e4d7c7;
-      --water-main: #9fe6ff;
-      --water-deep: #54c3f6;
-      --accent-gold: #ffd36b;
-      --bush: #92e3a9;
-      --pink: #ff9fb7;
-      --lavender: #c6b5ff;
-    }
+  /* 🌤 改成朝氣藍天色系 */
+  --sky-top: #8fd3ff;        /* 亮藍、乾淨的早晨天空 */
+  --sky-bottom: #c9ecff;     /* 清爽淺藍，由上往下更柔和 */
+  --ground: #ffe9c7;
+  --stone-main: #fff7f0;
+  --stone-shadow: #e4d7c7;
+  --water-main: #9fe6ff;
+  --water-deep: #54c3f6;
+  --accent-gold: #ffd36b;
+  --bush: #92e3a9;
+  --pink: #ff9fb7;
+  --lavender: #c6b5ff;
+}
 
     * {
       box-sizing: border-box;
@@ -239,10 +239,10 @@
         <!-- 背景天空漸層 -->
         <defs>
           <linearGradient id="skyGradient" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stop-color="#cbe7ff" />
-            <stop offset="55%" stop-color="#ffe0f0" />
-            <stop offset="100%" stop-color="#ffe9c7" />
-          </linearGradient>
+  <stop offset="0%" stop-color="#8fd3ff" />     <!-- 上方亮藍 -->
+  <stop offset="70%" stop-color="#bfe9ff" />    <!-- 中段柔和藍 -->
+  <stop offset="100%" stop-color="#e8f8ff" />   <!-- 下方淺天藍 -->
+</linearGradient>
 
           <radialGradient id="sunGradient" cx="50%" cy="30%" r="40%">
             <stop offset="0%" stop-color="#fff6c1" />
